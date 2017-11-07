@@ -3,6 +3,10 @@
 mode:
   priority: 200
 
+blocking:
+  mode2_shot_rainbow_hit:
+    block: 1
+
 shots:
   mode2_shot_rainbow:
     switch: switch_27

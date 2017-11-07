@@ -64,7 +64,7 @@ class ShotGroup(ModeDevice):
         self.debug_log(
             "Shot group is complete with state: %s", state)
 
-        self.machine.events.post('{}_complete'.format(self.name), state=state)
+        self.machine.events.post_blockable('{}_complete'.format(self.name), state=state)
         '''event: (shot_group)_complete
         desc: All the member shots in the shot group called (shot_group)
         are in the same state.
@@ -73,7 +73,7 @@ class ShotGroup(ModeDevice):
           state: name of the common state of all shots.
         '''
 
-        self.machine.events.post('{}_{}_complete'.format(self.name, state))
+        self.machine.events.post_blockable('{}_{}_complete'.format(self.name, state))
         '''event: (shot_group)_(state)_complete
         desc: All the member shots in the shot group called (shot_group)
         are in the same state named (state).
@@ -116,7 +116,7 @@ class ShotGroup(ModeDevice):
         if advancing:
             self._check_for_complete()
 
-        self.machine.events.post(self.name + '_hit')
+        self.machine.events.post_blockable(self.name + '_hit')
         '''event: (shot_group)_hit
         desc: A member shots in the shot group called (shot_group)
         has been hit.

@@ -4,6 +4,7 @@ from collections import deque, namedtuple
 import uuid
 
 import asyncio
+from enum import Enum
 from functools import partial
 from unittest.mock import MagicMock
 
@@ -503,6 +504,34 @@ class EventManager(MpfController):
         """
         self._post(event, ev_type='relay', callback=callback, **kwargs)
 
+    def post_blockable(self, event: str, callback=None, **kwargs) -> None:
+        """Post a blockable event which causes all the registered handlers to be called up to a certain priority limit.
+
+        When "blocked" only handlers up to a certain priority are called.
+
+        Args:
+            event: A string name of the event you're posting. Note that you can
+                post whatever event you want. You don't have to set up anything
+                ahead of time, and if no handlers are registered for the event
+                you post, so be it. Note that this event name will be converted
+                to lowercase.
+            callback: The method which will be called when the final handler is
+                done processing this event. Default is None.
+            **kwargs: One or more options keyword/value pairs that will be
+                passed to each handler. (Just make sure your handlers are
+                expecting them. You can add ``**kwargs`` to your handler
+                methods if certain ones don't need them.)
+
+        Events are processed serially (e.g. one at a time), so if the event
+        core is in the process of handling another event, this event is
+        added to a queue and processed after the current event is done.
+
+        You can control the order the handlers will be called by
+        specifying a priority when the handlers were registered. (Higher
+        priority values will be processed first.)
+        """
+        self._post(event, ev_type='blockable', callback=callback, **kwargs)
+
     def _post(self, event: str, ev_type: Optional[str], callback, **kwargs: dict) -> None:
 
         event = event.lower()
@@ -616,11 +645,15 @@ class EventManager(MpfController):
                 kwargs['ev_result'] = False
 
                 self.debug_log("Aborting future event processing")
-
                 break
 
             elif ev_type == 'relay' and isinstance(result, dict):
                 kwargs.update(result)
+            elif ev_type == 'blockable':
+                if '_min_priority' in kwargs and kwargs['_min_priority'] > handler.priority:
+                    break
+                if isinstance(result, dict) and '_min_priority' in result:
+                    kwargs['_min_priority'] = result['_min_priority']
 
         return result
 

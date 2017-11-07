@@ -278,8 +278,8 @@ class Shot(EnableDisableMixin, ModeDevice):
 
         self._notify_monitors(self.config['profile'].name, state)
 
-        self.machine.events.post('{}_hit'.format(self.name),
-                                 profile=self.profile_name, state=state, advancing=advancing)
+        self.machine.events.post_blockable('{}_hit'.format(self.name),
+                                           profile=self.profile_name, state=state, advancing=advancing)
         '''event: (shot)_hit
         desc: The shot called (shot) was just hit.
 
@@ -291,8 +291,8 @@ class Shot(EnableDisableMixin, ModeDevice):
         profile: The name of the profile that was active when hit.
         state: The name of the state the profile was in when it was hit'''
 
-        self.machine.events.post('{}_{}_hit'.format(self.name, self.profile_name),
-                                 profile=self.profile_name, state=state, advancing=advancing)
+        self.machine.events.post_blockable('{}_{}_hit'.format(self.name, self.profile_name),
+                                           profile=self.profile_name, state=state, advancing=advancing)
         '''event: (shot)_(profile)_hit
         desc: The shot called (shot) was just hit with the profile (profile)
         active.
@@ -310,8 +310,8 @@ class Shot(EnableDisableMixin, ModeDevice):
         profile: The name of the profile that was active when hit.
         state: The name of the state the profile was in when it was hit'''
 
-        self.machine.events.post('{}_{}_{}_hit'.format(self.name, self.profile_name, state),
-                                 profile=self.profile_name, state=state, advancing=advancing)
+        self.machine.events.post_blockable('{}_{}_{}_hit'.format(self.name, self.profile_name, state),
+                                           profile=self.profile_name, state=state, advancing=advancing)
         '''event: (shot)_(profile)_(state)_hit
         desc: The shot called (shot) was just hit with the profile (profile)
         active in the state (state).
@@ -329,8 +329,8 @@ class Shot(EnableDisableMixin, ModeDevice):
         profile: The name of the profile that was active when hit.
         state: The name of the state the profile was in when it was hit'''
 
-        self.machine.events.post('{}_{}_hit'.format(self.name, state),
-                                 profile=self.profile_name, state=state, advancing=advancing)
+        self.machine.events.post_blockable('{}_{}_hit'.format(self.name, state),
+                                           profile=self.profile_name, state=state, advancing=advancing)
         '''event: (shot)_(state)_hit
         desc: The shot called (shot) was just hit while in the profile (state).
 

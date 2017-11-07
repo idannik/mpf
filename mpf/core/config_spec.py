@@ -196,6 +196,9 @@ bitmap_fonts:
     file: single|str|None
     load: single|str|None
     descriptor: ignore
+blocking:
+    __valid_in__: mode
+    __allow_others__:
 bonus_mode_settings:
     display_delay_ms: single|ms|2000
     hurry_up_delay_ms: single|ms|500
